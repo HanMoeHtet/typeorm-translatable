@@ -1,4 +1,4 @@
-# TypeORM Translatable
+# [typeorm-translatable](https://github.com/HanMoeHtet/typeorm-translatable) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![npm version](https://img.shields.io/npm/v/@han-moe-htet/typeorm-translatable.svg?style=flat)](https://www.npmjs.com/package/@han-moe-htet/typeorm-translatable)
 
 Translation classes, utils, custom repositories and decorators for i18n in TypeORM.
 
