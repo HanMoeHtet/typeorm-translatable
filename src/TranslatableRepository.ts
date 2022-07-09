@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 /**
- * Customer repository that intercepts all queries and adds translation
+ * Custom repository that intercepts all queries and adds translation
  * @param manager Entity manager
  * @param locale Locale to use
  * @throws {NotTranslatableException} If locale cannot be resolved

@@ -23,38 +23,22 @@ import {
 } from './types';
 
 export class TranslationConfig implements ITranslationConfig {
-  /**
-   * Get locale, typically from request or execution context
-   * e.g. req.locale or als.getStore().locale
-   */
   getLocale: () => string | undefined = () => undefined;
 
   private _shouldDelete = true;
 
-  /**
-   * Where or not translations filed in the entity should be deleted
-   * @default true
-   */
   get shouldDelete() {
     return this._shouldDelete;
   }
 
   private _shouldMutate: boolean = false;
 
-  /**
-   * Where or not the entity should be mutated when translating
-   * @default false
-   */
   get shouldMutate() {
     return this._shouldMutate;
   }
 
   private _entitySuffix: string = 'Translation';
 
-  /**
-   * Translation entity name suffix, don't be confused with table name suffix.
-   * @default 'Translation'
-   */
   get entitySuffix() {
     return this._entitySuffix;
   }
@@ -65,11 +49,6 @@ export class TranslationConfig implements ITranslationConfig {
     translationsOneToManyRelations: [],
   };
 
-  /**
-   * Store translation metadata args
-   * TODO: remove the storage and build the entity when decorator is called
-   * @experimental
-   */
   getTranslationMetadataArgsStorage() {
     return this._translationMetadataArgsStorage;
   }
@@ -79,18 +58,10 @@ export class TranslationConfig implements ITranslationConfig {
     { new (): TranslationEntity<TranslatableEntity<ObjectLiteral>> }
   > = new Map();
 
-  /**
-   * Store generated translation entities
-   * @experimental
-   */
   getTranslationEntities() {
     return Array.from(this._translationEntitiesMap.values());
   }
 
-  /**
-   * Get entity manager, typically from transaction or execution context
-   * e.g. transaction.manager or als.getStore().entityManager
-   */
   getEntityManager: () => EntityManager | undefined = () => undefined;
 
   /**
