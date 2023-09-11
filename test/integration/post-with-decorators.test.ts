@@ -8,6 +8,7 @@ import {
 } from '../../src';
 import { dataSourceOptions } from '../common/database';
 import { PostWithDecorators } from '../common/post-with-decorators/post-with-decorators.entity';
+import { MyPost } from '../../app/src/post/my-post';
 
 describe('integrate:PostWithDecorators', () => {
   let postRepository: Repository<PostWithDecorators>;
@@ -23,17 +24,17 @@ describe('integrate:PostWithDecorators', () => {
   beforeAll(async () => {
     appDataSource = new DataSource({
       ...dataSourceOptions,
-      entities: [PostWithDecorators, ...TranslationConfig.generate()],
+      entities: [PostWithDecorators, ...TranslationConfig.generate(), MyPost],
     });
     await appDataSource.initialize();
 
     TranslationConfig.use({
       getLocale: () => 'my',
-      getEntityManager: () => appDataSource.manager,
+      getEntityManager: () => appDataSource.createEntityManager(),
     });
-
-    postRepository = appDataSource.getRepository(PostWithDecorators);
-    postRepository.extend(TranslatableRepository(postRepository.manager));
+    const postManager = appDataSource.createEntityManager();
+    postRepository = postManager.getRepository(PostWithDecorators);
+    postRepository.extend(TranslatableRepository(postManager));
 
     PostTranslation = TranslationConfig.getTranslationEntity<{
       title: string;
@@ -76,6 +77,18 @@ describe('integrate:PostWithDecorators', () => {
 
     expect(updatedPost.title).toBe('ခေါင်းစဉ်');
     expect(updatedPost.body).toBe('အကြောင်းအရာ');
+  });
+
+  it('Should find post with translation and myPost without translation', async () => {
+    await expect(postRepository.find({})).resolves.not.toThrow();
+
+    await expect(appDataSource.getRepository(MyPost).find({})).resolves.not.toThrow();
+  });
+
+  it('Should find post with translation and myPost without translation using config', async () => {
+    await expect(TranslationConfig.getTranslationRepository(PostWithDecorators).find({})).resolves.not.toThrow();
+
+    await expect(appDataSource.getRepository(MyPost).find({})).resolves.not.toThrow();
   });
 
   it('Should count', async () => {
@@ -269,9 +282,10 @@ describe('integrate:PostWithDecorators', () => {
       ]);
     });
 
-    let postRepository = appDataSource.getRepository(PostWithDecorators);
+    const postManager = appDataSource.createEntityManager();
+    let postRepository = postManager.getRepository(PostWithDecorators);
     postRepository = postRepository.extend(
-      TranslatableRepository(postRepository.manager)
+      TranslatableRepository(postManager)
     );
 
     let updatedPost = await postRepository.findOneOrFail({

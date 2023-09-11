@@ -9,12 +9,13 @@ import { logToOut } from '../utils/logToOut';
 export const getPostsWithDecoratorsWithRepository = async (
   locale = TranslationConfig.getInstance().getLocale()
 ) => {
-  let postWithDecoratorsRepository = appDataSource.getRepository(
+  const postManager = appDataSource.createEntityManager();
+  let postWithDecoratorsRepository = postManager.getRepository(
     PostWithDecorators
   );
 
   postWithDecoratorsRepository = postWithDecoratorsRepository.extend(
-    TranslatableRepository(postWithDecoratorsRepository.manager, locale)
+    TranslatableRepository(postManager, locale)
   );
 
   let posts = await postWithDecoratorsRepository.find();

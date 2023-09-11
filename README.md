@@ -133,13 +133,14 @@ TranslationConfig.use({
 
 # Usage for repository extension (Experimental)
 
-This is rather overriding the repository instead of extending it. `TranslatableRepository` will override the `entityManager` of repository to left join translation entity automatically when doing select operations.
+This is rather overriding the repository instead of extending it. `TranslatableRepository` will override the `entityManager` of repository to left join translation entity automatically when doing select operations. ***Important** since `entityManager`'s `createQueryBuilder` will be overridden, you need to create new `entityManager`. You can reuse this `entityManager` for all repositories with translation. But not the repositories without translation. Not doing so will result in issues like [this](https://github.com/HanMoeHtet/typeorm-translatable/issues/2) .
 
 ```typescript
-let postRepository = appDataSource.getRepository(Post);
+const postManager = appDataSource.createEntityManager();
+let postRepository = postManager.getRepository(Post);
 
 postRepository = postRepository.extend(
-  TranslatableRepository(postRepository.manager)
+  TranslatableRepository(postManager)
 );
 ```
 

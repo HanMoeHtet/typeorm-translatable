@@ -47,9 +47,10 @@ export const createAndGetPostsWithDecoratorsWithRepositoryInTransaction = async 
     ]);
   });
 
-  let postRepository = appDataSource.getRepository(PostWithDecorators);
+  const postManager = appDataSource.createEntityManager();
+  let postRepository = postManager.getRepository(PostWithDecorators);
   postRepository = postRepository.extend(
-    TranslatableRepository(postRepository.manager)
+    TranslatableRepository(postManager)
   );
 
   let updatedPost = await postRepository.findOneOrFail({

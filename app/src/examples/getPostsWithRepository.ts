@@ -9,10 +9,11 @@ import { logToOut } from '../utils/logToOut';
 export const getPostsWithRepository = async (
   locale = TranslationConfig.getInstance().getLocale()
 ) => {
-  let postRepository = appDataSource.getRepository(Post);
+  let manager = appDataSource.createEntityManager();
+  let postRepository = manager.getRepository(Post)
 
   postRepository = postRepository.extend(
-    TranslatableRepository(postRepository.manager, locale)
+    TranslatableRepository(manager, locale)
   );
 
   let posts = await postRepository.find();

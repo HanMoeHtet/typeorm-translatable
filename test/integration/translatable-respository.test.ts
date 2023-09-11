@@ -1,4 +1,5 @@
-import { DataSource, Repository } from 'typeorm';
+import { MyPost } from './../../app/src/post/my-post';
+import { DataSource, In, Repository } from 'typeorm';
 import { TranslatableRepository, TranslationConfig } from '../../src';
 import { dataSourceOptions } from '../common/database';
 import { PostTranslation } from '../common/post/post-translation.entity';
@@ -12,7 +13,7 @@ describe('integrate:TranslatableRepository', () => {
   beforeAll(async () => {
     appDataSource = new DataSource({
       ...dataSourceOptions,
-      entities: [Post, PostTranslation],
+      entities: [Post, PostTranslation, MyPost],
     });
     await appDataSource.initialize();
 
@@ -20,9 +21,9 @@ describe('integrate:TranslatableRepository', () => {
       getLocale: () => 'my',
       getEntityManager: () => appDataSource.manager,
     });
-
-    postRepository = appDataSource.getRepository(Post);
-    postRepository.extend(TranslatableRepository(postRepository.manager));
+    const postManager = appDataSource.createEntityManager();
+    postRepository = postManager.getRepository(Post);
+    postRepository.extend(TranslatableRepository(postManager));
 
     postTranslationRepository = appDataSource.getRepository(PostTranslation);
   });
@@ -61,6 +62,12 @@ describe('integrate:TranslatableRepository', () => {
 
     expect(updatedPost.title).toBe('ခေါင်းစဉ်');
     expect(updatedPost.body).toBe('အကြောင်းအရာ');
+  });
+
+  it('Should find post with translation and myPost without translation', async () => {
+    await expect(postRepository.find({})).resolves.not.toThrow();
+
+    await expect(appDataSource.getRepository(MyPost).find({})).resolves.not.toThrow();
   });
 
   it('Should count', async () => {
@@ -248,9 +255,10 @@ describe('integrate:TranslatableRepository', () => {
       ]);
     });
 
-    let postRepository = appDataSource.getRepository(Post);
+    const postManager = appDataSource.createEntityManager();
+    let postRepository = postManager.getRepository(Post);
     postRepository = postRepository.extend(
-      TranslatableRepository(postRepository.manager)
+      TranslatableRepository(postManager)
     );
 
     let updatedPost = await postRepository.findOneOrFail({

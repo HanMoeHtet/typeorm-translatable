@@ -6,6 +6,8 @@ import { getPostsWithDecoratorsWithRepository } from './examples/getPostsWithDec
 import { createAndGetPostsWithDecoratorsWithRepositoryInTransaction } from './examples/createAndGetPostsWithDecoratorsWithRepositoryInTransaction';
 import { getPosts } from './examples/getPosts';
 import { createPosts } from './examples/createPosts';
+import { MyPost } from './post/my-post';
+import { getPostsWithRepository } from './examples/getPostsWithRepository';
 
 (async () => {
   await appDataSource.initialize();
@@ -15,9 +17,14 @@ import { createPosts } from './examples/createPosts';
     getEntityManager: () => appDataSource.manager,
   });
 
-  await createPosts();
+  // await createPosts();
+  console.log(appDataSource.createEntityManager()=== appDataSource.getRepository(MyPost).manager)
 
-  await getPosts();
+  await getPostsWithRepository();
+
+  const myPostRepository = appDataSource.getRepository(MyPost);
+  const response = await myPostRepository.find()
+  
 
   // await getPostsWithRepository();
 

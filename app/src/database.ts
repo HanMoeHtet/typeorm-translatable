@@ -3,6 +3,7 @@ import { DataSourceOptions, DataSource } from 'typeorm';
 import { PostWithDecorators } from './post-with-decorators/post-with-decorators.entity';
 import { PostTranslation } from './post/post-translation.entity';
 import { Post } from './post/post.entity';
+import { MyPost } from './post/my-post';
 
 const {
   DATABASE_HOST,
@@ -25,6 +26,7 @@ const dataSourceOptions: DataSourceOptions = (() => {
       Post,
       PostTranslation,
       PostWithDecorators,
+      MyPost,
       ...TranslationConfig.generate(),
     ],
     migrations: [],
