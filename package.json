@@ -1,6 +1,6 @@
 {
   "name": "typeorm-translatable",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Translation classes, utils and decorators for i18n in TypeORM",
   "keywords": [
     "typeorm",
